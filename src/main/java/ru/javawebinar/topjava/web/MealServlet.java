@@ -14,9 +14,8 @@ import java.util.List;
 public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<MealWithExceed> list = MealsUtil.getFilteredWithExceededByCycle(MealsUtil.meals,
-                LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
-        req.setAttribute("name", "FIO");
+        List<MealWithExceed> list = MealsUtil.getWithExceeded(MealsUtil.meals,2000);
+
         req.setAttribute("list",list);
         req.getRequestDispatcher("/meals.jsp").forward(req,resp);
     }

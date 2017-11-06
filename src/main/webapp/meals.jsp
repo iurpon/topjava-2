@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib uri="http://example.com/functions" prefix="f" %>
 <html>
 <head>
     <title>Meals</title>
@@ -25,15 +26,16 @@
     <c:forEach var = "list" items = "${list}">
         <c:if test="${list.exceed}">
             <tr align="center" style="color:red">
-                <td>${list.dateTime}</td>
+                <td>${f:formatLocalDateTime(list.dateTime, 'dd.MM.yyyy : HH.mm')}</td>
                 <td>${list.description}</td>
                 <td>${list.calories}</td>
                 <td>${list.exceed}</td>
+
             </tr>
          </c:if>
         <c:if test="${!list.exceed}">
             <tr align="center" style="color:blue">
-                <td>${list.dateTime}</td>
+                <td>${f:formatLocalDateTime(list.dateTime, 'dd.MM.yyyy : HH.mm')}</td>
                 <td>${list.description}</td>
                 <td>${list.calories}</td>
                 <td>${list.exceed}</td>
