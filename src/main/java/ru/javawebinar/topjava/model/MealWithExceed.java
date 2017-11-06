@@ -1,8 +1,11 @@
 package ru.javawebinar.topjava.model;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealWithExceed {
+    private  int count;
+
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -44,4 +47,11 @@ public class MealWithExceed {
         return exceed;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 }
