@@ -14,6 +14,10 @@
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
+    <h2 align="center">
+        <a href="/new">Add meal</a>
+        <a href="/list">Meal List</a>
+    </h2>
 <h1>
     <h1>${name}</h1>
     <table class="item-table"  width="59%" border="1" align="center">
@@ -28,41 +32,24 @@
 
         <c:if test="${list.exceed}">
             <tr align="center" style="color:red">
-                <td style="color:black">${list.count}</td>
-                <td>${f:formatLocalDateTime(list.dateTime, 'dd.MM.yyyy : HH.mm')}</td>
-                <td>${list.description}</td>
-                <td>${list.calories}</td>
-                <td>${list.exceed}</td>
-                <td><a href="?action=edit&userId=<c:out value="${list.count}"/>">Edit</a></td>
-                <td><a href="?action=delete&userId=<c:out value="${list.count}"/>">Delete</a></td>
-
-            </tr>
-         </c:if>
+        </c:if>
         <c:if test="${!list.exceed}">
             <tr align="center" style="color:blue">
+        </c:if>
                 <td style="color:black">${list.count}</td>
                 <td>${f:formatLocalDateTime(list.dateTime, 'dd.MM.yyyy : HH.mm')}</td>
                 <td>${list.description}</td>
                 <td>${list.calories}</td>
                 <td>${list.exceed}</td>
-                <td><a href="?action=edit&userId=<c:out value="${list.count}"/>">Edit</a></td>
-                <td><a href="?action=delete&userId=<c:out value="${list.count}"/>">Delete</a></td>
+                <td><a href="/edit?id=<c:out value="${list.count}"/>">Edit</a></td>
+                <td><a href="/delete?id=<c:out value="${list.count}"/>">Delete</a></td>
+
             </tr>
-        </c:if>
+
+
     </c:forEach>
     </table>
 </h1>
-<form method="POST" >
-    <p>Add Meal</p>
-    DateTime : <input type="datetime-local"  name="dateTime"
-                     value="<c:out value="${DateTime}" />" /> <br />
-    Description : <input
-        type="text" name="description"
-        value="<c:out value="${Description}" />" /> <br />
-    Calories : <input
-        type="text" name="calories"
-        value="<c:out value="${Calories}" />" /> <br />
-    <input  type="submit" value="Добавить" />
-</form>
+
 </body>
 </html>

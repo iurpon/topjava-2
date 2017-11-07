@@ -4,6 +4,14 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 public class CrudRealize implements CrudMeal {
+    public Meal getMeal(int id){
+        for(Meal m : MealsUtil.meals){
+            if(m.getCount() == id){
+                return m;
+            }
+        }
+        return null;
+    }
     @Override
     public void add(Meal meal) {
         MealsUtil.mealsC.add(meal);
@@ -16,6 +24,7 @@ public class CrudRealize implements CrudMeal {
 
     @Override
     public void update(Meal meal) {
+        System.out.println("in update");
         for(Meal m : MealsUtil.meals){
             if(m.getCount() == meal.getCount()){
                 m.setCalories(meal.getCalories());
@@ -23,6 +32,7 @@ public class CrudRealize implements CrudMeal {
                 m.setDescription(meal.getDescription());
             }
         }
+        System.out.println("after update");
     }
 
     @Override

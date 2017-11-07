@@ -7,4 +7,5 @@ public interface CrudMeal {
     void delete(int id);
     void update(Meal meal);
     void create(Meal meal);
+    Meal getMeal(int id);
 }

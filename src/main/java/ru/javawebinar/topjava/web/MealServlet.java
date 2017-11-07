@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealWithExceed;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,59 +17,80 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-
-public class MealServlet extends HttpServlet {
-    private CrudMeal crudMeal;
-    DateTimeFormatter  formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+public class MealServlet extends HttpServlet{
+    private static final long serialVersionUID = 1L;
+    private CrudRealize crudRealize;
     public MealServlet(){
-        crudMeal = new CrudRealize();
+        crudRealize = new CrudRealize();
     }
-
     @Override
+
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        String action = req.getParameter("action");
-        if(action != null)
-        if(action.equals("delete")){
-            int id = Integer.parseInt(req.getParameter("userId"));
-            crudMeal.delete(id);
-            System.out.println("delete");
-        }
 
-        req.setAttribute("list",MealsUtil.getWithExceeded(MealsUtil.mealsC,2000));
-        req.getRequestDispatcher("/meals.jsp").forward(req,resp);
+        String action = req.getServletPath();
+        System.out.println(action);
+        switch (action){
+            case "/new" : showNewForm(req,resp);break;
+            case "/delete" : deleteMeal(req,resp);break;
+            case "/update" : updateMeal(req,resp);break;
+            case "/create" : createMeal(req,resp);break;
+            case "/edit" : editMeal(req,resp);break;
+            default: showListMeal(req,resp);
+        }
     }
+
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
-        Meal meal = new Meal();
-        meal.setDescription(req.getParameter("description"));
-        meal.setCalories(Integer.parseInt(req.getParameter("calories")));
+        doGet(req, resp);
+    }
 
-        try {
-
-            String text = req.getParameter("dateTime");
-            text = text.replace("T"," ");
-
-            if(text == null)
-                System.out.println("NULL");
-            else
-            System.out.println(text);
-            LocalDateTime parsedDate = LocalDateTime.parse(text, formatter);
-            meal.setDateTime(parsedDate);
+    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        RequestDispatcher dispatcher = request.getRequestDispatcher("editMeals.jsp");
+        dispatcher.forward(request, response);
+    }
 
 
-        } catch (Exception e) {
-            System.out.println("parse date");
-            e.printStackTrace();
-        }
-        System.out.println("no exeptions");
-        crudMeal.add(meal);
+    private void deleteMeal(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
+        int id = Integer.parseInt(req.getParameter("id"));
+        System.out.println(id);
+        crudRealize.delete(id);
+        resp.sendRedirect("list");
+
+
+    }
+    public void editMeal(HttpServletRequest req,HttpServletResponse resp) throws ServletException, IOException{
+        int id = Integer.parseInt(req.getParameter("id"));
+        Meal mealS = crudRealize.getMeal(id);
+        System.out.println(mealS);
+        req.setAttribute("meal",mealS);
+        req.getRequestDispatcher("/editMeals.jsp").forward(req,resp);
+    }
+    private void updateMeal(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        int id = Integer.parseInt(req.getParameter("id"));
+        Meal mealS = crudRealize.getMeal(id);
+        mealS.setCalories(Integer.parseInt(req.getParameter("calories")));
+        mealS.setDescription(req.getParameter("description"));
+        crudRealize.update(mealS);
+        System.out.println(mealS);
+        resp.sendRedirect("list");
+
+    }
+    private void showListMeal(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         req.setAttribute("list",MealsUtil.getWithExceeded(MealsUtil.mealsC,2000));
         req.getRequestDispatcher("/meals.jsp").forward(req,resp);
+    }
+    private void createMeal(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+
+    }
+    private void addMeal(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
     }
 }
+
