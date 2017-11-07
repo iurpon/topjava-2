@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.web;
 import ru.javawebinar.topjava.dao.CrudMeal;
 import ru.javawebinar.topjava.dao.CrudRealize;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.MealWithExceed;
+
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.RequestDispatcher;
@@ -12,16 +12,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.concurrent.CopyOnWriteArrayList;
+
+
 
 public class MealServlet extends HttpServlet{
+    DateTimeFormatter  formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final long serialVersionUID = 1L;
-    private CrudRealize crudRealize;
+    private CrudMeal crudRealize;
     public MealServlet(){
         crudRealize = new CrudRealize();
     }
@@ -78,7 +77,6 @@ public class MealServlet extends HttpServlet{
         mealS.setCalories(Integer.parseInt(req.getParameter("calories")));
         mealS.setDescription(req.getParameter("description"));
         crudRealize.update(mealS);
-        System.out.println(mealS);
         resp.sendRedirect("list");
 
     }
@@ -87,10 +85,22 @@ public class MealServlet extends HttpServlet{
         req.getRequestDispatcher("/meals.jsp").forward(req,resp);
     }
     private void createMeal(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        Meal meal = new Meal();
+        meal.setDescription(req.getParameter("description"));
+        meal.setCalories(Integer.parseInt(req.getParameter("calories")));
+        try {
+            String text = req.getParameter("dateTime");
+            text = text.replace("T"," ");
+            LocalDateTime parsedDate = LocalDateTime.parse(text, formatter);
+            meal.setDateTime(parsedDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        crudRealize.add(meal);
+        resp.sendRedirect("list");
 
     }
     private void addMeal(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
     }
 }
-

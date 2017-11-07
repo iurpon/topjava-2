@@ -36,7 +36,7 @@
                 <tr>
                     <th> ID </th>
                     <td>
-                        <input type="text"  name="id"
+                        <input type="hidden"   name="id"
                                value="<c:out value="${meal.count}" />" /> <br />
                     </td>
                 </tr>

@@ -13,7 +13,7 @@
     <title>Meals</title>
 </head>
 <body>
-<h3><a href="index.html">Home</a></h3>
+<h3><a href="topjava/index.html">Home</a></h3>
     <h2 align="center">
         <a href="/new">Add meal</a>
         <a href="/list">Meal List</a>

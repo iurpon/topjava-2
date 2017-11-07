@@ -5,7 +5,7 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 public class CrudRealize implements CrudMeal {
     public Meal getMeal(int id){
-        for(Meal m : MealsUtil.meals){
+        for(Meal m : MealsUtil.mealsC){
             if(m.getCount() == id){
                 return m;
             }
@@ -25,7 +25,7 @@ public class CrudRealize implements CrudMeal {
     @Override
     public void update(Meal meal) {
         System.out.println("in update");
-        for(Meal m : MealsUtil.meals){
+        for(Meal m : MealsUtil.mealsC){
             if(m.getCount() == meal.getCount()){
                 m.setCalories(meal.getCalories());
                 m.setDateTime(meal.getDateTime());
