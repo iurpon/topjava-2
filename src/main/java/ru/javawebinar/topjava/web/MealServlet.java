@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.dao.CrudMeal;
 import ru.javawebinar.topjava.dao.CrudRealize;
 import ru.javawebinar.topjava.model.Meal;
@@ -18,7 +20,8 @@ import java.time.format.DateTimeFormatter;
 
 
 public class MealServlet extends HttpServlet{
-    DateTimeFormatter  formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final Logger LOGGER = LoggerFactory.getLogger(MealServlet.class);
+    private DateTimeFormatter  formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final long serialVersionUID = 1L;
     private CrudMeal crudRealize;
     public MealServlet(){
@@ -27,6 +30,7 @@ public class MealServlet extends HttpServlet{
     @Override
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        LOGGER.debug("redirect to userList");
         req.setCharacterEncoding("UTF-8");
 
         String action = req.getServletPath();
