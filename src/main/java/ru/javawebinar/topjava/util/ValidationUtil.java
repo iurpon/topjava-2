@@ -1,8 +1,9 @@
 package ru.javawebinar.topjava.util;
 
 
-import ru.javawebinar.topjava.model.AbstractBaseEntity;
+
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 public class ValidationUtil {
@@ -33,6 +34,20 @@ public class ValidationUtil {
     }
 
     public static void assureIdConsistent(Meal entity, int id) {
+//      http://stackoverflow.com/a/32728226/548473
+        if (entity.isNew()) {
+            entity.setId(id);
+        } else if (entity.getId() != id) {
+            throw new IllegalArgumentException(entity + " must be with id=" + id);
+        }
+    }
+    public static void checkNew(User entity) {
+        if (!entity.isNew()) {
+            throw new IllegalArgumentException(entity + " must be new (id=null)");
+        }
+    }
+
+    public static void assureIdConsistent(User entity, int id) {
 //      http://stackoverflow.com/a/32728226/548473
         if (entity.isNew()) {
             entity.setId(id);
