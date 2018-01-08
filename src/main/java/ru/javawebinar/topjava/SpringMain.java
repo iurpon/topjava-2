@@ -15,5 +15,6 @@ public class SpringMain {
         UserRepository userRepository = appCtx.getBean(UserRepository.class);
         userRepository.getAll();
         appCtx.close();
+
     }
 }
