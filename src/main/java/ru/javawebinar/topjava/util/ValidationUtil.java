@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 public class ValidationUtil {
+    private ValidationUtil(){}
 
     public static void checkNotFoundWithId(boolean found, int id) {
         checkNotFound(found, "id=" + id);
