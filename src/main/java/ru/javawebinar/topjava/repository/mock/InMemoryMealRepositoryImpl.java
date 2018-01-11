@@ -21,20 +21,14 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach(this::save);
+        MealsUtil.MEALS.forEach(m -> save(m,1));
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public Meal save(Meal meal,int userId) {
 
-        Objects.requireNonNull(meal);
         log.info(" InMemoryMealRepositoryImpl save " + meal);
-/*        if (meal.isNew()) {
-            meal.setId(counter.incrementAndGet());
-        }
-        repository.put(meal.getId(), meal);
-        return meal;*/
-        int userId = AuthorizedUser.id();
+
         Map<Integer,Meal> current = repository.computeIfAbsent(userId,ConcurrentHashMap::new);
         if(meal.isNew()){
             meal.setId(counter.incrementAndGet());
@@ -48,19 +42,16 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id,int userId) {
         log.info(" InMemoryMealRepositoryImpl delete  " + id);
-        int userId = AuthorizedUser.id();
         Map<Integer,Meal> current = repository.get(userId);
         current.remove(id);
     }
 
     @Override
-    public Meal get(int id) {
+    public Meal get(int id,int userId) {
         log.info(" InMemoryMealRepositoryImpl get " + id);
-        int userId = AuthorizedUser.id();
         Map<Integer,Meal> current = repository.get(userId);
-        ValidationUtil.assureIdConsistent(current.get(id),id);
         return current.get(id);
     }
 
