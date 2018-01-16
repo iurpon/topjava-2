@@ -7,54 +7,78 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
+import ru.javawebinar.topjava.to.MealWithExceed;
+import ru.javawebinar.topjava.util.DateTimeUtil;
+import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.util.Collections;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
-import static ru.javawebinar.topjava.util.ValidationUtil.*;
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 @Controller
 public class MealRestController {
-    Logger log  = LoggerFactory.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(MealRestController.class);
+
+    private final MealService service;
 
     @Autowired
-    private MealService service;
+    public MealRestController(MealService service) {
+        this.service = service;
+    }
 
-    public Meal create(Meal meal){
-        int userId  = AuthorizedUser.id();
-        log.info("MealRestController create meal " + meal ==null? "NULL": meal + " from userId " + userId);
-        checkNotFoundWithId(meal,userId);
+    public Meal get(int id) {
+        int userId = AuthorizedUser.id();
+        log.info("get meal {} for user {}", id, userId);
+        return service.get(id, userId);
+    }
+
+    public void delete(int id) {
+        int userId = AuthorizedUser.id();
+        log.info("delete meal {} for user {}", id, userId);
+        service.delete(id, userId);
+    }
+
+    public List<MealWithExceed> getAll() {
+        int userId = AuthorizedUser.id();
+        log.info("getAll for user {}", userId);
+        return MealsUtil.getWithExceeded(service.getAll(userId), AuthorizedUser.getCaloriesPerDay());
+    }
+
+    public Meal create(Meal meal) {
+        int userId = AuthorizedUser.id();
         checkNew(meal);
-        return service.create(meal,userId);
+        log.info("create {} for user {}", meal, userId);
+        return service.create(meal, userId);
     }
 
-    public void delete(int id){
-        int userId  = AuthorizedUser.id();
-        log.info("MealRestController delete meal with id " + userId);
-        service.delete(id,userId);
-    }
-    public Meal get(int id){
-        int userId  = AuthorizedUser.id();
-        log.info("MealRestController get meal with id " + userId);
-        return service.get(id,userId);
+    public void update(Meal meal, int id) {
+        int userId = AuthorizedUser.id();
+        assureIdConsistent(meal, id);
+        log.info("update {} for user {}", meal, userId);
+        service.update(meal, userId);
     }
 
-    public void update(Meal meal){
-        int userId  = AuthorizedUser.id();
-        log.info("MealRestController update meal " + meal ==null? "NULL": meal + " from userId " + userId);
-        checkNotFoundWithId(meal,userId);
-        service.update(meal,userId);
-    }
+    /**
+     * <ol>Filter separately
+     * <li>by date</li>
+     * <li>by time for every date</li>
+     * </ol>
+     */
+    public List<MealWithExceed> getBetween(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+        int userId = AuthorizedUser.id();
+        log.info("getBetween dates({} - {}) time({} - {}) for user {}", startDate, endDate, startTime, endTime, userId);
 
-    public List<Meal> getAll(){
-        log.info("MealRestController getAll");
-        return service.getAll();
-    }
+        List<Meal> mealsDateFiltered = service.getBetweenDates(
+                startDate != null ? startDate : DateTimeUtil.MIN_DATE,
+                endDate != null ? endDate : DateTimeUtil.MAX_DATE, userId);
 
-    @Override
-    public String toString() {
-        return "MealRestController{}";
+        return MealsUtil.getFilteredWithExceeded(mealsDateFiltered,
+                startTime != null ? startTime : LocalTime.MIN,
+                endTime != null ? endTime : LocalTime.MAX,
+                AuthorizedUser.getCaloriesPerDay()
+        );
     }
 }
