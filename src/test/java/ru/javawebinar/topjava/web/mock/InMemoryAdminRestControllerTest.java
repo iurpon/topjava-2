@@ -25,7 +25,7 @@ public class InMemoryAdminRestControllerTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        ctx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        ctx = new ClassPathXmlApplicationContext("spring/spring-app.xml","spring/mock.xml");
         Arrays.stream(ctx.getBeanDefinitionNames()).forEach(System.out::println);
         controller = ctx.getBean(AdminRestController.class);
         repository = ctx.getBean(InMemoryUserRepositoryImpl.class);
