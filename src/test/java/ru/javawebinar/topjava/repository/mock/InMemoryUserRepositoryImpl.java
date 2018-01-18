@@ -1,6 +1,9 @@
 package ru.javawebinar.topjava.repository.mock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
@@ -11,14 +14,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static ru.javawebinar.topjava.UserTestData.ADMIN;
+import static ru.javawebinar.topjava.UserTestData.USER;
+
 @Repository
 public class InMemoryUserRepositoryImpl implements UserRepository {
+    Logger log = LoggerFactory.getLogger(getClass());
 
     public static final int USER_ID = 1;
     public static final int ADMIN_ID = 2;
 
     private Map<Integer, User> repository = new ConcurrentHashMap<>();
-    private AtomicInteger counter = new AtomicInteger(0);
+    private AtomicInteger counter = new AtomicInteger(2);
 
     @Override
     public User save(User user) {
@@ -28,6 +35,13 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
             return user;
         }
         return repository.computeIfPresent(user.getId(), (id, oldUser) -> user);
+    }
+
+    public void init() {
+        log.info("InMemoryUserRepository init()");
+        repository.clear();
+        repository.put(UserTestData.USER_ID, USER);
+        repository.put(UserTestData.ADMIN_ID, ADMIN);
     }
 
     @Override
@@ -42,6 +56,8 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> getAll() {
+
+        log.info("InMEmoryUserRepository getAll()");
         return repository.values().stream()
                 .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
                 .collect(Collectors.toList());
