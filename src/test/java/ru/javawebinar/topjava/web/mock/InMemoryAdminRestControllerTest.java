@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static ru.javawebinar.topjava.UserTestData.USER;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
@@ -25,7 +24,7 @@ public class InMemoryAdminRestControllerTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        ctx = new ClassPathXmlApplicationContext("spring/spring-app.xml","spring/mock.xml");
+        ctx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/mock.xml");
         Arrays.stream(ctx.getBeanDefinitionNames()).forEach(System.out::println);
         controller = ctx.getBean(AdminRestController.class);
         repository = ctx.getBean(InMemoryUserRepositoryImpl.class);
