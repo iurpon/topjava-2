@@ -1,8 +1,11 @@
 package ru.javawebinar.topjava.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
 
 public class Meal  extends AbstractBaseEntity{
 
