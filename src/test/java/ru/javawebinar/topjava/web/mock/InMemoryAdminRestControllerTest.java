@@ -49,7 +49,7 @@ public class InMemoryAdminRestControllerTest {
 
     @Test
     public void get() throws Exception {
-        User user = controller.get(1);
+        User user = controller.get(USER_ID);
         System.out.println("USER__________" + user);
         Assert.assertEquals(user,USER);
     }
