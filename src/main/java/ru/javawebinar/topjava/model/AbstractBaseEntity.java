@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.model;
 
 import javax.persistence.*;
+import org.hibernate.Hibernate;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)
@@ -39,7 +40,7 @@ public abstract class AbstractBaseEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !getClass().equals(Hibernate.getClass(o)))  return false;
 
         AbstractBaseEntity that = (AbstractBaseEntity) o;
 

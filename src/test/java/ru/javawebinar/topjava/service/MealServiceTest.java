@@ -1,8 +1,15 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -14,6 +21,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -25,7 +33,33 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql" ,config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
     @Autowired
-     MealService service;
+     private MealService service;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    public static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+
+    public static StringBuilder results = new StringBuilder();
+
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            String result = String.format("\n%-25s %7d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            results.append(result);
+            log.info(result + " ms\n");
+        }
+    };
+
+    @AfterClass
+    public static void printResult() {
+        log.info("\n---------------------------------" +
+                "\nTest                 Duration, ms" +
+                "\n---------------------------------" +
+                results +
+                "\n---------------------------------");
+    }
 
 
     @Test
@@ -75,9 +109,20 @@ public class MealServiceTest {
         List<Meal> list = service.getAll(USER_ID);
         Assert.assertEquals(list.size(),7);
     }
-
-    @Test(expected = NotFoundException.class)
+    @Test
+    public void testDeleteNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
+        service.delete(MEAL1_ID, 1);
+    }
+    @Test
+    public void getNotFound() throws Exception{
+        thrown.expect(NotFoundException.class);
+        service.get(MEAL1_ID,1);
+    }
+    @Test
     public void testUpdateNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
+        thrown.expectMessage("Not found entity with id=" + MEAL1_ID);
         service.update(MEAL1, ADMIN_ID);
     }
 
