@@ -54,7 +54,7 @@ public class JpaUserRepositoryImpl implements UserRepository {
         Query query = em.createQuery("DELETE FROM User u WHERE u.id=:id");
         return query.setParameter("id", id).executeUpdate() != 0;*/
         Query query = em.createNamedQuery(User.DELETE);
-        query.setParameter(id,"id");
+        query.setParameter("id",id);
         return query.executeUpdate() != 0;
     }
 

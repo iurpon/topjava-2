@@ -30,6 +30,9 @@ public class UserServiceImplTest {
 
     @Test
     public void delete() throws Exception {
+        repository.delete(USER_ID);
+        List<User> list = repository.getAll();
+        Assert.assertEquals(list.size(),1);
     }
 
     @Test
