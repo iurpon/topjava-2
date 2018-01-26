@@ -14,18 +14,13 @@
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <!--<context:property-placeholder location="db/postgres.properties" />-->
-    <context:property-placeholder location="db/hsqldb.properties" />
+
+
 
     <context:component-scan base-package="ru.javawebinar.topjava.repository.jpa"/>
 
 
-    <bean id = "dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="${database.driverClassName}"/>
-        <property name="url" value="${database.url}"/>
-        <property name="username" value="${database.username}"/>
-        <property name="password" value="${database.password}"/>
-    </bean>
+
 
     <jdbc:initialize-database data-source="dataSource" enabled="${database.init}">
         <jdbc:script location="db/${jdbc.initLocation}"/>
@@ -57,6 +52,26 @@
     <!-- Transaction manager for a single JPA EntityManagerFactory (alternative to JTA) -->
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
           p:entityManagerFactory-ref="entityManagerFactory"/>
+
+    <beans profile = "hsqldb">
+        <context:property-placeholder location="db/hsqldb.properties" />
+        <bean id = "dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+            <property name="driverClassName" value="${database.driverClassName}"/>
+            <property name="url" value="${database.url}"/>
+            <property name="username" value="${database.username}"/>
+            <property name="password" value="${database.password}"/>
+        </bean>
+    </beans>
+
+    <beans profile="postgres">
+        <context:property-placeholder location="db/postgres.properties" />
+        <bean id = "dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+            <property name="driverClassName" value="${database.driverClassName}"/>
+            <property name="url" value="${database.url}"/>
+            <property name="username" value="${database.username}"/>
+            <property name="password" value="${database.password}"/>
+        </bean>
+    </beans>
 
 
 
