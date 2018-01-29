@@ -2,8 +2,7 @@ package ru.javawebinar.topjava.util;
 
 
 
-import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.HasId;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 public class ValidationUtil {
@@ -30,34 +29,21 @@ public class ValidationUtil {
         }
     }
 
-    public static void checkNew(Meal entity) {
-        if (!entity.isNew()) {
-            throw new IllegalArgumentException(entity + " must be new (id=null)");
+    public static void checkNew(HasId bean) {
+        if (!bean.isNew()) {
+            throw new IllegalArgumentException(bean + " must be new (id=null)");
         }
     }
 
-    public static void assureIdConsistent(Meal entity, int id) {
+    public static void assureIdConsistent(HasId bean, int id) {
 //      http://stackoverflow.com/a/32728226/548473
-        if (entity.isNew()) {
-            entity.setId(id);
-        } else if (entity.getId() != id) {
-            throw new IllegalArgumentException(entity + " must be with id=" + id);
-        }
-    }
-    public static void checkNew(User entity) {
-        if (!entity.isNew()) {
-            throw new IllegalArgumentException(entity + " must be new (id=null)");
+        if (bean.isNew()) {
+            bean.setId(id);
+        } else if (bean.getId() != id) {
+            throw new IllegalArgumentException(bean + " must be with id=" + id);
         }
     }
 
-    public static void assureIdConsistent(User entity, int id) {
-//      http://stackoverflow.com/a/32728226/548473
-        if (entity.isNew()) {
-            entity.setId(id);
-        } else if (entity.getId() != id) {
-            throw new IllegalArgumentException(entity + " must be with id=" + id);
-        }
-    }
 
     //  http://stackoverflow.com/a/28565320/548473
     public static Throwable getRootCause(Throwable t) {
